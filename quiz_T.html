@@ -633,5 +633,37 @@ load();
 
 </script>
 
+<!-- SUPABASE MODULE -->
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://oojidxnmreehgkyawaaa.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vamlkeG5tcmVlaGdreWF3YWFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzQxMDEsImV4cCI6MjA4OTQxMDEwMX0.9VMLifRBhO52A6FopWg1f1-yEnUDpFwSPlvPnj1XtKM';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+window.saveQuizScore = async function(userId, quizCode, scoreValue, totalValue) {
+    const { error } = await supabase.rpc('submit_quiz_score', {
+        p_user_id: userId,
+        p_quiz_code: quizCode,
+        p_score: scoreValue,
+        p_total: totalValue,
+    });
+    
+    if(error) return { ok:false, error:error.message };
+    return { ok:true };
+};
+</script>
+
+<!-- LOGIN CHECK -->
+<script>
+(function checkLogin(){
+    const raw = localStorage.getItem('app_user');
+    if(!raw){
+        window.location.href = 'login.html';
+    }
+})();
+</script>
+
 </body>
 </html>

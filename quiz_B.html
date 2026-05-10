@@ -411,11 +411,82 @@ function goLeaderboard(){
 }
 
 /* ======================================
+   SUBMIT SCORE
+====================================== */
+async function submitScoreToLeaderboard(){
+    const raw = localStorage.getItem("app_user");
+    if(!raw) return {ok:false, error:"Session user tidak ditemukan. Silakan login ulang."};
+    
+    if(typeof window.saveQuizScore !== "function") 
+        return {ok:false, error:"Client Supabase belum siap."};
+    
+    try {
+        const user = JSON.parse(raw);
+        if(!user || !user.id) return {ok:false, error:"Data user tidak valid. Silakan login ulang."};
+        
+        return await window.saveQuizScore(user.id, "banjir", score, quiz.length);
+    } catch(err) {
+        return {ok:false, error:"Session rusak. Silakan login ulang."};
+    }
+}
+
+async function submitResult(){
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "⏳ Mengirim...";
+    
+    const result = await submitScoreToLeaderboard();
+    
+    if(!result.ok){
+        submitBtn.disabled = false;
+        submitBtn.textContent = "📤 Submit Skor";
+        alert(`Gagal submit skor: ${result.error}`);
+        return;
+    }
+    
+    submitBtn.textContent = "✅ Skor Terkirim";
+    submitBtn.disabled = true;
+    document.getElementById("leaderboardBtn").style.display = "inline-block";
+}
+
+/* ======================================
    START
 ====================================== */
 typeText("Halo! Aku Bumi 🌎 Yuk belajar banjir!");
 load();
 
+</script>
+
+<!-- SUPABASE MODULE -->
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://oojidxnmreehgkyawaaa.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vamlkeG5tcmVlaGdreWF3YWFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzQxMDEsImV4cCI6MjA4OTQxMDEwMX0.9VMLifRBhO52A6FopWg1f1-yEnUDpFwSPlvPnj1XtKM';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+window.saveQuizScore = async function(userId, quizCode, scoreValue, totalValue) {
+    const { error } = await supabase.rpc('submit_quiz_score', {
+        p_user_id: userId,
+        p_quiz_code: quizCode,
+        p_score: scoreValue,
+        p_total: totalValue,
+    });
+    
+    if(error) return { ok:false, error:error.message };
+    return { ok:true };
+};
+</script>
+
+<!-- LOGIN CHECK -->
+<script>
+(function checkLogin(){
+    const raw = localStorage.getItem('app_user');
+    if(!raw){
+        window.location.href = 'login.html';
+    }
+})();
 </script>
 
 </body>
