@@ -456,11 +456,8 @@ button:disabled {
     </div>
   </div>
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-    const SUPABASE_URL = 'https://oojidxnmreehgkyawaaa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vamlkeG5tcmVlaGdreWF3YWFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MzQxMDEsImV4cCI6MjA4OTQxMDEwMX0.9VMLifRBhO52A6FopWg1f1-yEnUDpFwSPlvPnj1XtKM';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    import { createSupabaseClient } from './supabase_config.js';
+    const supabase = createSupabaseClient();
 
     const form = document.getElementById('loginForm');
     const errorEl = document.getElementById('error');
