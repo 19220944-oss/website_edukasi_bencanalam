@@ -401,6 +401,11 @@ function load(){
         );
     }
 
+    if(index >= quiz.length){
+        finish();
+        return;
+    }
+
     progress.textContent =
         `Soal ${index+1} / ${quiz.length}`;
 
