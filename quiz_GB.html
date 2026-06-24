@@ -339,8 +339,8 @@ function typeText(text){
     bubble.textContent = "";
 
     let i = 0;
-import { createSupabaseClient } from './supabase_config.js';
-const supabase = createSupabaseClient();
+
+    typingTimer = setInterval(()=>{
 
         bubble.textContent += text.charAt(i);
 
